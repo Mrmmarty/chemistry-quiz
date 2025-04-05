@@ -9,6 +9,8 @@ import { Progress } from "@/components/ui/progress";
 import NavHeader from "@/components/NavHeader";
 import { flashcardData } from "@/data/flashcardData";
 import QuestionCard from "@/components/QuestionCard";
+import { saveQuizScore } from "@/lib/score-utils";
+import { ScoreHistory } from "@/components/ScoreHistory";
 
 // Function to shuffle an array
 const shuffleArray = <T,>(array: T[]): T[] => {
@@ -58,6 +60,8 @@ export default function FlashcardQuizPage() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, { answer: string; isCorrect: boolean }>>({});
   const [showResults, setShowResults] = useState(false);
+  const [scoresSaved, setScoresSaved] = useState(false);
+  const [progress, setProgress] = useState(0);
   
   // Initialize on first mount only
   useEffect(() => {
@@ -88,11 +92,25 @@ export default function FlashcardQuizPage() {
     setMounted(true);
   }, []);
   
+  // Save scores when quiz is completed
+  useEffect(() => {
+    if (showResults && !scoresSaved) {
+      const correct = Object.values(answers).filter(a => a.isCorrect).length;
+      const total = questions.length;
+      
+      // Save flashcard quiz result
+      saveQuizScore('Flashcard Quiz', correct, total);
+      setScoresSaved(true);
+    }
+  }, [showResults, scoresSaved, answers, questions.length]);
+  
   // Reset quiz progress
   const handleRestartQuiz = () => {
     setCurrentQuestionIndex(0);
     setAnswers({});
+    setProgress(0);
     setShowResults(false);
+    setScoresSaved(false);
     localStorage.removeItem("flashcardQuizProgress");
   };
   
@@ -296,6 +314,16 @@ export default function FlashcardQuizPage() {
                 Terug naar Home
               </Button>
             </CardFooter>
+          </Card>
+          
+          {/* Display score history */}
+          <Card className="mt-6">
+            <CardHeader>
+              <CardTitle>Eerdere Resultaten</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ScoreHistory quizType="Flashcard Quiz" limit={5} />
+            </CardContent>
           </Card>
         </motion.div>
       )}

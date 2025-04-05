@@ -9,6 +9,8 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import NavHeader from "@/components/NavHeader";
+import { saveQuizScore } from "@/lib/score-utils";
+import { ScoreHistory } from "@/components/ScoreHistory";
 
 type SectionResult = {
   sectionName: string;
@@ -29,6 +31,9 @@ export default function QuizPage() {
     currentQuestionIndex: number;
     answers: Record<string, { answer: string; isCorrect: boolean }>;
   }>>({});
+  
+  // Add a state to track if the current quiz was already saved
+  const [scoresSaved, setScoresSaved] = useState(false);
   
   // Set isClient to true once the component mounts
   useEffect(() => {
@@ -80,6 +85,24 @@ export default function QuizPage() {
     };
   }, [saveToLocalStorage]);
   
+  // Save scores when quiz is completed
+  useEffect(() => {
+    if (showFinalResults && !scoresSaved) {
+      const totalCorrect = sectionResults.reduce((sum, section) => sum + section.score, 0);
+      const totalQuestions = sectionResults.reduce((sum, section) => sum + section.total, 0);
+      
+      // Save overall quiz result
+      saveQuizScore('Volledige Quiz', totalCorrect, totalQuestions);
+      
+      // Save each section result separately
+      sectionResults.forEach(section => {
+        saveQuizScore(section.sectionName, section.score, section.total);
+      });
+      
+      setScoresSaved(true);
+    }
+  }, [showFinalResults, sectionResults, scoresSaved]);
+  
   const handleSectionComplete = (result: SectionResult) => {
     const newResults = [...sectionResults];
     
@@ -115,6 +138,7 @@ export default function QuizPage() {
     setCurrentSectionIndex(0);
     setSectionProgress({});
     setShowFinalResults(false);
+    setScoresSaved(false);
   };
   
   // Track question progress within a section - use useCallback to avoid recreating on every render
@@ -201,7 +225,7 @@ export default function QuizPage() {
           animate={{ opacity: 1 }}
           className="max-w-3xl mx-auto"
         >
-          <Card>
+          <Card className="mb-6">
             <CardHeader>
               <CardTitle className="text-2xl">Quiz Resultaten</CardTitle>
               <CardDescription>
@@ -253,6 +277,16 @@ export default function QuizPage() {
                 Terug naar Home
               </Button>
             </CardFooter>
+          </Card>
+          
+          {/* Display score history */}
+          <Card className="mt-6">
+            <CardHeader>
+              <CardTitle>Eerdere Resultaten</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ScoreHistory quizType="Volledige Quiz" limit={5} />
+            </CardContent>
           </Card>
         </motion.div>
       )}
