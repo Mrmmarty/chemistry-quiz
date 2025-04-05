@@ -19,6 +19,8 @@ const nextConfig = {
         // This should be removed in a production environment
         ignoreBuildErrors: true,
     },
+    // Add assetPrefix for fonts to work correctly with basePath
+    assetPrefix: process.env.NODE_ENV === 'production' ? '/chemistry-quiz' : '',
 };
 
 module.exports = nextConfig; 
