@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import NavHeader from "@/components/NavHeader";
 import { ScoreHistory } from "@/components/ScoreHistory";
+import { ScoreBackup } from "@/components/ScoreBackup";
 import { getQuizTypes } from "@/lib/score-utils";
 
 export default function ScoresPage() {
@@ -28,52 +29,60 @@ export default function ScoresPage() {
       
       <h1 className="text-3xl font-bold mb-6 dyslexic-text">Quiz Resultaten</h1>
       
-      <Tabs defaultValue="all">
-        <TabsList className="mb-6">
-          <TabsTrigger value="all">Alle Resultaten</TabsTrigger>
-          <TabsTrigger value="quizzes">Per Quiz</TabsTrigger>
-        </TabsList>
-        
-        <TabsContent value="all" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Recente Resultaten</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ScoreHistory limit={20} />
-            </CardContent>
-          </Card>
-        </TabsContent>
-        
-        <TabsContent value="quizzes" className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {quizTypes.length > 0 ? (
-              quizTypes.map(quizType => (
-                <div key={quizType}>
-                  <Card className="h-full">
-                    <CardHeader>
-                      <CardTitle className="text-lg">{quizType}</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <ScoreHistory quizType={quizType} limit={5} />
-                    </CardContent>
-                  </Card>
-                </div>
-              ))
-            ) : (
-              <div className="col-span-full">
-                <Card>
-                  <CardContent className="p-6">
-                    <p className="text-center text-muted-foreground">
-                      Nog geen quiz resultaten gevonden. Maak een quiz om je voortgang te zien!
-                    </p>
-                  </CardContent>
-                </Card>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="md:col-span-2">
+          <Tabs defaultValue="all">
+            <TabsList className="mb-6">
+              <TabsTrigger value="all">Alle Resultaten</TabsTrigger>
+              <TabsTrigger value="quizzes">Per Quiz</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="all" className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Recente Resultaten</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ScoreHistory limit={20} />
+                </CardContent>
+              </Card>
+            </TabsContent>
+            
+            <TabsContent value="quizzes" className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {quizTypes.length > 0 ? (
+                  quizTypes.map(quizType => (
+                    <div key={quizType}>
+                      <Card className="h-full">
+                        <CardHeader>
+                          <CardTitle className="text-lg">{quizType}</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <ScoreHistory quizType={quizType} limit={5} />
+                        </CardContent>
+                      </Card>
+                    </div>
+                  ))
+                ) : (
+                  <div className="col-span-full">
+                    <Card>
+                      <CardContent className="p-6">
+                        <p className="text-center text-muted-foreground">
+                          Nog geen quiz resultaten gevonden. Maak een quiz om je voortgang te zien!
+                        </p>
+                      </CardContent>
+                    </Card>
+                  </div>
+                )}
               </div>
-            )}
-          </div>
-        </TabsContent>
-      </Tabs>
+            </TabsContent>
+          </Tabs>
+        </div>
+        
+        <div>
+          <ScoreBackup />
+        </div>
+      </div>
     </div>
   );
 } 

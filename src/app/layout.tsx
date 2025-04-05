@@ -3,6 +3,7 @@ import { Inter as FontSans } from "next/font/google";
 import { Geist_Mono } from "next/font/google";
 import type { Metadata } from "next";
 import { FontSwitcher } from "@/components/FontSwitcher";
+import { ScoreMigration } from "@/components/ScoreMigration";
 import { getFontPath } from "@/lib/font-utils";
 
 const fontSans = FontSans({
@@ -69,6 +70,7 @@ export default function RootLayout({
         className={`min-h-screen bg-background font-sans antialiased ${fontSans.variable} ${geistMono.variable}`}
       >
         <FontSwitcher />
+        <ScoreMigration />
         {children}
       </body>
     </html>
