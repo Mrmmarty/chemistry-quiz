@@ -21,6 +21,23 @@ const nextConfig = {
     },
     // Add assetPrefix for fonts to work correctly with basePath
     assetPrefix: process.env.NODE_ENV === 'production' ? '/chemistry-quiz' : '',
+
+    // Ensure static assets are included in the output
+    distDir: 'out',
+
+    // Copy fonts to the static folder
+    experimental: {
+        // Enable static export
+        outputFileTracingExcludes: {
+            '*': [
+                // Exclude some unnecessary files
+                'node_modules/**/*.{js,map,json}',
+                '.next/cache/**',
+            ],
+        },
+    },
+    // Enable trailing slash for GitHub Pages compatibility
+    trailingSlash: true,
 };
 
 module.exports = nextConfig; 

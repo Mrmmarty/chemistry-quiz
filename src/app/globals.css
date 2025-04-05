@@ -1,13 +1,18 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-/* OpenDyslexic Font Declarations */
+/* 
+ * OpenDyslexic Font Declarations are now handled directly in layout.tsx 
+ * for better compatibility with GitHub Pages
+ */
+
+/*
 @font-face {
   font-family: 'OpenDyslexic';
-  src: url('../fonts/OpenDyslexic-Regular.woff2') format('woff2'),
-       url('../fonts/OpenDyslexic-Regular.woff') format('woff'),
-       url('../fonts/OpenDyslexic-Regular.eot') format('embedded-opentype'),
-       url('../fonts/OpenDyslexic-Regular.otf') format('opentype');
+  src: url('/static/fonts/OpenDyslexic-Regular.woff2') format('woff2'),
+       url('/static/fonts/OpenDyslexic-Regular.woff') format('woff'),
+       url('/static/fonts/OpenDyslexic-Regular.eot') format('embedded-opentype'),
+       url('/static/fonts/OpenDyslexic-Regular.otf') format('opentype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -15,10 +20,10 @@
 
 @font-face {
   font-family: 'OpenDyslexic';
-  src: url('../fonts/OpenDyslexic-Bold.woff2') format('woff2'),
-       url('../fonts/OpenDyslexic-Bold.woff') format('woff'),
-       url('../fonts/OpenDyslexic-Bold.eot') format('embedded-opentype'),
-       url('../fonts/OpenDyslexic-Bold.otf') format('opentype');
+  src: url('/static/fonts/OpenDyslexic-Bold.woff2') format('woff2'),
+       url('/static/fonts/OpenDyslexic-Bold.woff') format('woff'),
+       url('/static/fonts/OpenDyslexic-Bold.eot') format('embedded-opentype'),
+       url('/static/fonts/OpenDyslexic-Bold.otf') format('opentype');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -26,10 +31,10 @@
 
 @font-face {
   font-family: 'OpenDyslexic';
-  src: url('../fonts/OpenDyslexic-Italic.woff2') format('woff2'),
-       url('../fonts/OpenDyslexic-Italic.woff') format('woff'),
-       url('../fonts/OpenDyslexic-Italic.eot') format('embedded-opentype'),
-       url('../fonts/OpenDyslexic-Italic.otf') format('opentype');
+  src: url('/static/fonts/OpenDyslexic-Italic.woff2') format('woff2'),
+       url('/static/fonts/OpenDyslexic-Italic.woff') format('woff'),
+       url('/static/fonts/OpenDyslexic-Italic.eot') format('embedded-opentype'),
+       url('/static/fonts/OpenDyslexic-Italic.otf') format('opentype');
   font-weight: 400;
   font-style: italic;
   font-display: swap;
@@ -37,14 +42,15 @@
 
 @font-face {
   font-family: 'OpenDyslexic';
-  src: url('../fonts/OpenDyslexic-Bold-Italic.woff2') format('woff2'),
-       url('../fonts/OpenDyslexic-Bold-Italic.woff') format('woff'),
-       url('../fonts/OpenDyslexic-Bold-Italic.eot') format('embedded-opentype'),
-       url('../fonts/OpenDyslexic-Bold-Italic.otf') format('opentype');
+  src: url('/static/fonts/OpenDyslexic-Bold-Italic.woff2') format('woff2'),
+       url('/static/fonts/OpenDyslexic-Bold-Italic.woff') format('woff'),
+       url('/static/fonts/OpenDyslexic-Bold-Italic.eot') format('embedded-opentype'),
+       url('/static/fonts/OpenDyslexic-Bold-Italic.otf') format('opentype');
   font-weight: 700;
   font-style: italic;
   font-display: swap;
 }
+*/
 
 @custom-variant dark (&:is(.dark *));
 
