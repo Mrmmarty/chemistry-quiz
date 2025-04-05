@@ -25,13 +25,15 @@ export function FontSwitcher() {
   
   // Load saved font preference
   useEffect(() => {
-    const savedFont = localStorage.getItem("preferredFont");
-    if (savedFont) {
-      setCurrentFont(savedFont);
-      document.documentElement.setAttribute("data-font", savedFont);
-    } else {
-      // Default to OpenDyslexic
-      document.documentElement.setAttribute("data-font", "opentype");
+    if (typeof window !== 'undefined') {
+      const savedFont = localStorage.getItem("preferredFont");
+      if (savedFont) {
+        setCurrentFont(savedFont);
+        document.documentElement.setAttribute("data-font", savedFont);
+      } else {
+        // Default to OpenDyslexic
+        document.documentElement.setAttribute("data-font", "opentype");
+      }
     }
   }, []);
   
@@ -47,37 +49,35 @@ export function FontSwitcher() {
   const currentFontName = fontOptions.find(font => font.id === currentFont)?.name || "Lettertype";
   
   return (
-    <div className="font-switcher">
-      <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline" className="flex items-center gap-2">
-            <Type className="h-4 w-4" />
-            <span>{currentFontName}</span>
-            {isOpen ? (
-              <ChevronUp className="h-4 w-4" />
-            ) : (
-              <ChevronDown className="h-4 w-4" />
-            )}
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          {fontOptions.map((font) => (
-            <DropdownMenuItem
-              key={font.id}
-              className={`flex items-center justify-between gap-2 ${
-                font.id === currentFont ? "bg-primary/10" : ""
-              }`}
-              onClick={() => changeFont(font.id)}
-            >
-              <div className="flex flex-col">
-                <span className={`font-${font.id}`}>{font.name}</span>
-                <span className="text-xs text-muted-foreground">{font.description}</span>
-              </div>
-              {font.id === currentFont && <Check className="h-4 w-4" />}
-            </DropdownMenuItem>
-          ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </div>
+    <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline" className="flex items-center gap-2">
+          <Type className="h-4 w-4" />
+          <span>{currentFontName}</span>
+          {isOpen ? (
+            <ChevronUp className="h-4 w-4" />
+          ) : (
+            <ChevronDown className="h-4 w-4" />
+          )}
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        {fontOptions.map((font) => (
+          <DropdownMenuItem
+            key={font.id}
+            className={`flex items-center justify-between gap-2 ${
+              font.id === currentFont ? "bg-primary/10" : ""
+            }`}
+            onClick={() => changeFont(font.id)}
+          >
+            <div className="flex flex-col">
+              <span className={`font-${font.id}`}>{font.name}</span>
+              <span className="text-xs text-muted-foreground">{font.description}</span>
+            </div>
+            {font.id === currentFont && <Check className="h-4 w-4" />}
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 } 

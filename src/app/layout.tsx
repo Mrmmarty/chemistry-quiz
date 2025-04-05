@@ -2,7 +2,6 @@ import "./globals.css";
 import { Inter as FontSans } from "next/font/google";
 import { Geist_Mono } from "next/font/google";
 import type { Metadata } from "next";
-import { FontSwitcher } from "@/components/FontSwitcher";
 import { ScoreMigration } from "@/components/ScoreMigration";
 import { getFontPath } from "@/lib/font-utils";
 
@@ -69,7 +68,6 @@ export default function RootLayout({
       <body
         className={`min-h-screen bg-background font-sans antialiased ${fontSans.variable} ${geistMono.variable}`}
       >
-        <FontSwitcher />
         <ScoreMigration />
         {children}
       </body>
