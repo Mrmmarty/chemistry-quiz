@@ -183,7 +183,7 @@ export default function FlashcardQuizPage() {
   }
   
   // Calculate quiz progress
-  const progress = questions.length ? ((Object.keys(answers).length) / questions.length) * 100 : 0;
+  setProgress(questions.length ? ((Object.keys(answers).length) / questions.length) * 100 : 0);
   
   // Calculate final score
   const correctAnswers = Object.values(answers).filter(a => a.isCorrect).length;

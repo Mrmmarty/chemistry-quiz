@@ -25,19 +25,20 @@ const nextConfig = {
     // Ensure static assets are included in the output
     distDir: 'out',
 
-    // Copy fonts to the static folder
-    experimental: {
-        // Enable static export
-        outputFileTracingExcludes: {
-            '*': [
-                // Exclude some unnecessary files
-                'node_modules/**/*.{js,map,json}',
-                '.next/cache/**',
-            ],
-        },
+    // Moved from experimental to root level as recommended
+    outputFileTracingExcludes: {
+        '*': [
+            // Exclude some unnecessary files
+            'node_modules/**/*.{js,map,json}',
+            '.next/cache/**',
+        ],
     },
+
     // Enable trailing slash for GitHub Pages compatibility
     trailingSlash: true,
+
+    // Empty experimental object, could be removed if not needed
+    experimental: {}
 };
 
 module.exports = nextConfig; 
