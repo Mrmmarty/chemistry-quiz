@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { BookOpen, ListChecks, Home, ScrollText } from "lucide-react";
+import { BookOpen, ListChecks, Home } from "lucide-react";
 
 export default function NavHeader() {
   const pathname = usePathname();
@@ -37,16 +37,6 @@ export default function NavHeader() {
             >
               <BookOpen className="h-5 w-5" />
               <span className="hidden sm:inline">Flashcards</span>
-            </Button>
-          </Link>
-          
-          <Link href="/flashcard-quiz" className="no-underline">
-            <Button 
-              variant={pathname === "/flashcard-quiz" ? "default" : "outline"}
-              className="gap-2"
-            >
-              <ScrollText className="h-5 w-5" />
-              <span className="hidden sm:inline">Flashcard Quiz</span>
             </Button>
           </Link>
         </div>

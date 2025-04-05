@@ -20,7 +20,7 @@ export default function Home() {
           </p>
         </section>
         
-        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
           <Card className="dyslexic-card">
             <CardHeader>
               <CardTitle className="text-2xl">Quiz</CardTitle>
@@ -67,32 +67,6 @@ export default function Home() {
               <Link href="/flashcards" className="w-full">
                 <Button className="w-full text-lg p-6">
                   Open Flashcards
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </Link>
-            </CardFooter>
-          </Card>
-          
-          <Card className="dyslexic-card">
-            <CardHeader>
-              <CardTitle className="text-2xl">Flashcard Quiz</CardTitle>
-              <CardDescription className="text-lg">
-                Test je kennis van alle flashcard inhoud in quiz-formaat
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="aspect-video flex items-center justify-center relative">
-                <div 
-                  className="w-full h-full rounded-lg bg-secondary/20 flex items-center justify-center"
-                >
-                  <span className="text-2xl text-secondary/70">Flashcard Quiz</span>
-                </div>
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Link href="/flashcard-quiz" className="w-full">
-                <Button className="w-full text-lg p-6" variant="secondary">
-                  Start Flashcard Quiz
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
