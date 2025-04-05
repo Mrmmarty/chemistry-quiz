@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,7 +9,8 @@ import { Flashcard } from "@/components/Flashcard";
 import { flashcardData } from "@/data/flashcardData";
 import NavHeader from "@/components/NavHeader";
 
-export default function FlashcardsPage() {
+// Client component to handle search params
+function FlashcardContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   
@@ -211,5 +212,14 @@ export default function FlashcardsPage() {
         </p>
       </div>
     </div>
+  );
+}
+
+// Main page component with Suspense boundary
+export default function FlashcardsPage() {
+  return (
+    <Suspense fallback={<div className="p-8 text-center">Laden...</div>}>
+      <FlashcardContent />
+    </Suspense>
   );
 } 
