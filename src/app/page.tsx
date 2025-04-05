@@ -3,16 +3,10 @@
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { quizData } from "@/data/quizData";
-import { flashcardData } from "@/data/flashcardData";
 import NavHeader from "@/components/NavHeader";
 import { ArrowRight } from "lucide-react";
 
 export default function Home() {
-  const totalQuestions = quizData.sections.reduce((total, section) => total + section.questions.length, 0);
-  
-  const totalFlashcards = flashcardData.sections.reduce((total, section) => total + section.cards.length, 0);
-
   return (
     <div className="container mx-auto px-4 py-8">
       <NavHeader />

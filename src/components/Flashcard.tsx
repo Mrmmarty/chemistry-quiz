@@ -29,7 +29,6 @@ const extractVisualElements = (text: string) => {
 
 export function Flashcard({ front, back, onNext, onPrevious, currentIndex, totalCards }: FlashcardProps) {
   const [isFlipped, setIsFlipped] = useState(false);
-  const [fontSizeLevel, setFontSizeLevel] = useState(1); // 0: small, 1: medium, 2: large
   
   const { formattedText: formattedBack } = extractVisualElements(back);
   
@@ -46,20 +45,6 @@ export function Flashcard({ front, back, onNext, onPrevious, currentIndex, total
     setIsFlipped(false);
     onPrevious();
   };
-  
-  const increaseFontSize = () => {
-    setFontSizeLevel(prev => Math.min(prev + 1, 2));
-  };
-  
-  const decreaseFontSize = () => {
-    setFontSizeLevel(prev => Math.max(prev - 1, 0));
-  };
-  
-  const fontSizeClass = {
-    0: "text-base",
-    1: "text-xl",
-    2: "text-2xl"
-  }[fontSizeLevel];
   
   return (
     <AnimatePresence mode="wait">

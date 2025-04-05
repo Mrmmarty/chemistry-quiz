@@ -11,7 +11,7 @@ import { flashcardData } from "@/data/flashcardData";
 import QuestionCard from "@/components/QuestionCard";
 
 // Function to shuffle an array
-const shuffleArray = (array: any[]) => {
+const shuffleArray = <T,>(array: T[]): T[] => {
   const newArray = [...array];
   for (let i = newArray.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -87,19 +87,6 @@ export default function FlashcardQuizPage() {
     
     setMounted(true);
   }, []);
-  
-  // Helper to save current progress
-  const saveProgress = () => {
-    try {
-      localStorage.setItem("flashcardQuizProgress", JSON.stringify({
-        currentQuestionIndex,
-        answers,
-        showResults
-      }));
-    } catch (error) {
-      console.error("Failed to save progress", error);
-    }
-  };
   
   // Reset quiz progress
   const handleRestartQuiz = () => {
