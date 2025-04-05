@@ -1,0 +1,45 @@
+<svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <circle cx="150" cy="150" r="140" fill="#f5f5f5" stroke="#333" stroke-width="1"/>
+  
+  <!-- Phase triangle -->
+  <polygon points="150,40 50,220 250,220" fill="none" stroke="#333" stroke-width="2"/>
+  
+  <!-- Solid phase -->
+  <rect x="130" y="170" width="40" height="40" fill="#c6e0ff" stroke="#333" stroke-width="1"/>
+  <text x="150" y="230" font-family="Arial" font-size="12" fill="#000" text-anchor="middle">Vast</text>
+  
+  <!-- Liquid phase -->
+  <rect x="75" y="170" width="40" height="40" fill="#ffd6c6" stroke="#333" stroke-width="1" rx="5" ry="5"/>
+  <text x="95" y="230" font-family="Arial" font-size="12" fill="#000" text-anchor="middle">Vloeibaar</text>
+  
+  <!-- Gas phase -->
+  <circle cx="150" cy="90" r="25" fill="#e6ffe6" stroke="#333" stroke-width="1"/>
+  <text x="150" y="60" font-family="Arial" font-size="12" fill="#000" text-anchor="middle">Gas</text>
+  
+  <!-- Transition arrows -->
+  <!-- Melting/Freezing -->
+  <path d="M130,190 L115,190" stroke="#0066cc" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="122" y="180" font-family="Arial" font-size="10" fill="#0066cc" text-anchor="middle">Smelten</text>
+  <path d="M115,200 L130,200" stroke="#cc6600" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="122" y="215" font-family="Arial" font-size="10" fill="#cc6600" text-anchor="middle">Stollen</text>
+  
+  <!-- Evaporation/Condensation -->
+  <path d="M115,170 L145,115" stroke="#0066cc" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="110" y="140" font-family="Arial" font-size="10" fill="#0066cc" text-anchor="middle">Verdampen</text>
+  <path d="M140,115 L110,170" stroke="#cc6600" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="145" y="140" font-family="Arial" font-size="10" fill="#cc6600" text-anchor="middle">Condenseren</text>
+  
+  <!-- Sublimation/Deposition -->
+  <path d="M150,170 L150,115" stroke="#0066cc" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="170" y="140" font-family="Arial" font-size="10" fill="#0066cc" text-anchor="middle">Sublimeren</text>
+  <path d="M160,115 L160,170" stroke="#cc6600" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="190" y="140" font-family="Arial" font-size="10" fill="#cc6600" text-anchor="middle">Rijpen</text>
+  
+  <!-- Arrow markers definition -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#333"/>
+    </marker>
+  </defs>
+</svg> 

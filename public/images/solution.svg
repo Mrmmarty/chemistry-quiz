@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100" fill="none">
+  <!-- Flask container -->
+  <path d="M30 20H70V60C70 77.3 55.3 90 40 90H60C43.7 90 30 77.3 30 60V20Z" fill="#E6F7FF" stroke="#0066CC" stroke-width="2"/>
+  
+  <!-- Flask neck -->
+  <rect x="40" y="10" width="20" height="10" fill="#E6F7FF" stroke="#0066CC" stroke-width="2"/>
+  
+  <!-- Dissolved particles -->
+  <circle cx="40" cy="40" r="3" fill="#0066CC"/>
+  <circle cx="55" cy="50" r="3" fill="#0066CC"/>
+  <circle cx="45" cy="65" r="3" fill="#0066CC"/>
+  <circle cx="60" cy="70" r="3" fill="#0066CC"/>
+  <circle cx="50" cy="55" r="3" fill="#0066CC"/>
+  <circle cx="65" cy="45" r="3" fill="#0066CC"/>
+  <circle cx="35" cy="75" r="3" fill="#0066CC"/>
+  
+  <!-- Water molecules -->
+  <path d="M42 35C42 36.6569 40.6569 38 39 38C37.3431 38 36 36.6569 36 35C36 33.3431 39 30 39 30C39 30 42 33.3431 42 35Z" fill="#66B2FF"/>
+  <path d="M67 55C67 56.6569 65.6569 58 64 58C62.3431 58 61 56.6569 61 55C61 53.3431 64 50 64 50C64 50 67 53.3431 67 55Z" fill="#66B2FF"/>
+  <path d="M57 65C57 66.6569 55.6569 68 54 68C52.3431 68 51 66.6569 51 65C51 63.3431 54 60 54 60C54 60 57 63.3431 57 65Z" fill="#66B2FF"/>
+  <path d="M47 75C47 76.6569 45.6569 78 44 78C42.3431 78 41 76.6569 41 75C41 73.3431 44 70 44 70C44 70 47 73.3431 47 75Z" fill="#66B2FF"/>
+</svg> 

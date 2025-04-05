@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Progress } from "@/components/ui/progress";
 import QuestionCard from "./QuestionCard";
@@ -20,15 +20,53 @@ type QuizSectionProps = {
   description: string;
   questions: Question[];
   onComplete: (sectionResults: { sectionName: string; score: number; total: number }) => void;
+  initialProgress?: {
+    currentQuestionIndex: number;
+    answers: Record<string, { answer: string; isCorrect: boolean }>;
+  };
+  onProgressUpdate?: (
+    currentQuestionIndex: number, 
+    answers: Record<string, { answer: string; isCorrect: boolean }>
+  ) => void;
 };
 
-export default function QuizSection({ section, description, questions, onComplete }: QuizSectionProps) {
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [answers, setAnswers] = useState<Record<string, { answer: string; isCorrect: boolean }>>({});
+export default function QuizSection({ 
+  section, 
+  description, 
+  questions, 
+  onComplete, 
+  initialProgress,
+  onProgressUpdate 
+}: QuizSectionProps) {
+  const isInitialized = useRef(false);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(
+    initialProgress?.currentQuestionIndex || 0
+  );
+  const [answers, setAnswers] = useState<Record<string, { answer: string; isCorrect: boolean }>>(
+    initialProgress?.answers || {}
+  );
   const [showSummary, setShowSummary] = useState(false);
   
   const currentQuestion = questions[currentQuestionIndex];
   const progress = ((Object.keys(answers).length) / questions.length) * 100;
+  
+  // Notify parent component about progress updates, but only after the component is fully mounted
+  // and when the user makes changes
+  useEffect(() => {
+    if (!isInitialized.current) {
+      isInitialized.current = true;
+      return;
+    }
+    
+    // Use a debounced callback to avoid too frequent updates
+    const timer = setTimeout(() => {
+      if (onProgressUpdate) {
+        onProgressUpdate(currentQuestionIndex, answers);
+      }
+    }, 500);
+    
+    return () => clearTimeout(timer);
+  }, [currentQuestionIndex, answers, onProgressUpdate]);
   
   const handleAnswer = (questionId: string, answer: string, isCorrect: boolean) => {
     setAnswers(prev => ({
@@ -63,15 +101,15 @@ export default function QuizSection({ section, description, questions, onComplet
   
   return (
     <div className="w-full max-w-3xl mx-auto">
-      <Card className="mb-4">
+      <Card className="mb-6 dyslexic-card">
         <CardHeader>
-          <CardTitle>{section}</CardTitle>
-          <CardDescription>{description}</CardDescription>
+          <CardTitle className="text-2xl">{section}</CardTitle>
+          <CardDescription className="text-lg dyslexic-text">{description}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="mb-4">
-            <Progress value={progress} className="h-2" />
-            <div className="flex justify-between mt-2 text-sm text-gray-500">
+            <Progress value={progress} className="h-3" />
+            <div className="flex justify-between mt-3 text-md dyslexic-text">
               <span>Vraag {currentQuestionIndex + 1} van {questions.length}</span>
               <span>{Math.round(progress)}% voltooid</span>
             </div>
@@ -86,6 +124,7 @@ export default function QuizSection({ section, description, questions, onComplet
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
           >
             <QuestionCard
               key={currentQuestion.id}
@@ -97,11 +136,13 @@ export default function QuizSection({ section, description, questions, onComplet
               onAnswer={handleAnswer}
             />
             
-            <div className="mt-4 flex justify-between">
+            <div className="mt-6 flex justify-between">
               <Button
                 variant="outline"
                 disabled={currentQuestionIndex === 0}
                 onClick={() => setCurrentQuestionIndex(currentQuestionIndex - 1)}
+                className="text-lg p-6"
+                size="lg"
               >
                 Vorige
               </Button>
@@ -109,6 +150,8 @@ export default function QuizSection({ section, description, questions, onComplet
               <Button
                 onClick={handleNextQuestion}
                 disabled={!isCurrentQuestionAnswered}
+                className="text-lg p-6"
+                size="lg"
               >
                 {currentQuestionIndex < questions.length - 1 ? "Volgende" : "Toon resultaten"}
               </Button>
@@ -120,42 +163,43 @@ export default function QuizSection({ section, description, questions, onComplet
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
           >
-            <Card>
+            <Card className="dyslexic-card">
               <CardHeader>
-                <CardTitle>Resultaten: {section}</CardTitle>
-                <CardDescription>Je hebt dit onderdeel afgerond</CardDescription>
+                <CardTitle className="text-2xl">Resultaten: {section}</CardTitle>
+                <CardDescription className="text-lg dyslexic-text">Je hebt dit onderdeel afgerond</CardDescription>
               </CardHeader>
               
               <CardContent>
-                <div className="text-center mb-6">
-                  <div className="text-5xl font-bold mb-2">{scorePercentage}%</div>
-                  <p className="text-gray-500">
+                <div className="text-center mb-8">
+                  <div className="text-6xl font-bold mb-4">{scorePercentage}%</div>
+                  <p className="text-xl dyslexic-text">
                     Je hebt {correctAnswers} van de {questions.length} vragen goed beantwoord
                   </p>
                 </div>
                 
-                <div className="space-y-4">
+                <div className="space-y-6">
                   {questions.map((q, index) => {
                     const userAnswer = answers[q.id];
                     return (
-                      <div key={q.id} className="border-b pb-2 last:border-b-0">
-                        <div className="flex items-start gap-2">
-                          <div className={`mt-1 rounded-full w-6 h-6 flex items-center justify-center text-xs ${userAnswer?.isCorrect ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                      <div key={q.id} className="border-b pb-4 last:border-b-0">
+                        <div className="flex items-start gap-3">
+                          <div className={`mt-1 rounded-full w-8 h-8 flex items-center justify-center text-lg font-bold ${userAnswer?.isCorrect ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
                             {index + 1}
                           </div>
-                          <div>
-                            <p className="font-medium">{q.question}</p>
-                            <p className="text-sm mt-1">
+                          <div className="flex-1">
+                            <p className="font-medium text-lg dyslexic-text">{q.question}</p>
+                            <p className="text-md mt-2 dyslexic-text">
                               <span className="text-gray-500">Jouw antwoord: </span>
-                              <span className={userAnswer?.isCorrect ? 'text-green-600' : 'text-red-600'}>
+                              <span className={userAnswer?.isCorrect ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}>
                                 {userAnswer?.answer}
                               </span>
                             </p>
                             {!userAnswer?.isCorrect && (
-                              <p className="text-sm mt-1">
+                              <p className="text-md mt-2 dyslexic-text">
                                 <span className="text-gray-500">Juiste antwoord: </span>
-                                <span className="text-green-600">{q.answer}</span>
+                                <span className="text-green-600 font-medium">{q.answer}</span>
                               </p>
                             )}
                           </div>
@@ -166,8 +210,8 @@ export default function QuizSection({ section, description, questions, onComplet
                 </div>
               </CardContent>
               
-              <CardFooter>
-                <Button onClick={handleCompleteSection} className="w-full">
+              <CardFooter className="pt-4">
+                <Button onClick={handleCompleteSection} className="w-full text-lg p-6" size="lg">
                   Ga naar de volgende sectie
                 </Button>
               </CardFooter>

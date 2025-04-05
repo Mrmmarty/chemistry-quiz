@@ -1,4 +1,68 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Scheikunde Quiz (Chemistry Quiz)
+
+Een interactieve quiz applicatie voor het leren van scheikunde concepten. Deze app is ontworpen voor leerlingen en bevat quizvragen en flashcards om het leren te ondersteunen.
+
+## Project Structuur
+
+Het project heeft de volgende structuur:
+
+```
+chemistry-quiz/
+├── src/                      # Broncode van de React/Next.js app
+│   ├── app/                  # Next.js app router structuur
+│   │   ├── quiz/             # Quiz pagina
+│   │   ├── flashcards/       # Flashcards pagina
+│   │   ├── globals.css       # Globale stijlen
+│   │   ├── layout.tsx        # Layout component
+│   │   └── page.tsx          # Homepage
+│   ├── components/           # React componenten
+│   │   ├── ui/               # UI componenten (shadcn/ui)
+│   │   ├── Flashcard.tsx     # Flashcard component
+│   │   ├── QuestionCard.tsx  # Vraag component
+│   │   └── QuizSection.tsx   # Quiz sectie component
+│   ├── data/                 # Data voor de quiz en flashcards
+│   │   ├── flashcardData.ts  # Flashcard gegevens
+│   │   └── quizData.ts       # Quiz vragen en antwoorden
+│   └── lib/                  # Hulpprogramma's en configuratie
+└── tools/                    # Hulpprogramma's voor het project
+    ├── input_pdf/            # PDF bestanden met studiemateriaal
+    ├── output_images/        # Gegenereerde afbeeldingen uit PDF's
+    ├── pdf_to_images.py      # Script om PDF's naar afbeeldingen te converteren
+    └── scheikunde_pages.json # Geëxtraheerde inhoud uit de PDF's
+
+```
+
+## Kenmerken
+
+- **Quiz met meerkeuze vragen**: Test je kennis van scheikunde concepten
+- **Interactieve flashcards**: Leer belangrijke concepten met interactieve kaarten
+- **Toegankelijkheid**: De applicatie bevat functies voor verbeterde leesbaarheid
+- **Voortgang bijhouden**: Je voortgang wordt opgeslagen zodat je later kunt verdergaan
+- **PDF conversie tools**: Hulpmiddelen om studiemateriaal te digitaliseren
+
+## Installatie
+
+1. Kloon deze repository
+2. Installeer dependencies met `npm install`
+3. Start de ontwikkelserver met `npm run dev`
+
+## PDF Conversie Tools
+
+In de `tools` directory vind je hulpmiddelen voor het verwerken van de studiematerialen:
+
+- `pdf_to_images.py`: Converteert PDF bestanden naar PNG afbeeldingen
+- Plaats PDF bestanden in de `tools/input_pdf` directory
+- Run het script met `python tools/pdf_to_images.py`
+- Gegenereerde afbeeldingen worden opgeslagen in `tools/output_images`
+
+## Technologieën
+
+- Next.js
+- React
+- TypeScript
+- Tailwind CSS
+- shadcn/ui componenten
+- Framer Motion voor animaties
 
 ## Getting Started
 

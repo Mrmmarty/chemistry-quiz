@@ -3,164 +3,213 @@
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { flashcardData } from "@/data/flashcardData";
-import Flashcard from "@/components/Flashcard";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft } from "lucide-react";
+import { Flashcard } from "@/components/Flashcard";
+import { flashcardData } from "@/data/flashcardData";
+import NavHeader from "@/components/NavHeader";
 
 export default function FlashcardsPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   
-  // Add isClient state to prevent hydration mismatch
+  // Get section ID from URL params or default to showing section selection
+  const initialSectionParam = searchParams.get("section");
+  const [selectedSection, setSelectedSection] = useState<string | null>(initialSectionParam);
+  const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [isClient, setIsClient] = useState(false);
   
-  // Get section from URL parameters or default to first section
-  const sectionParam = searchParams.get("section");
-  const initialSection = sectionParam 
-    ? flashcardData.findIndex(s => s.section === sectionParam)
-    : 0;
-  
-  const [currentSectionIndex, setCurrentSectionIndex] = useState(initialSection >= 0 ? initialSection : 0);
-  const [currentCardIndex, setCurrentCardIndex] = useState(0);
-  const [showSectionSelect, setShowSectionSelect] = useState(!sectionParam);
-  
-  // Set isClient to true on component mount
+  // After component mounts on client, load any saved progress
   useEffect(() => {
     setIsClient(true);
-  }, []);
-  
-  const currentSection = flashcardData[currentSectionIndex];
-  
-  // Update URL when section changes, but only on client
-  useEffect(() => {
-    if (isClient && !showSectionSelect) {
-      const newUrl = `/flashcards?section=${encodeURIComponent(currentSection.section)}`;
-      window.history.replaceState({ path: newUrl }, "", newUrl);
+    
+    // If URL already has a section parameter, use that instead of localStorage
+    if (initialSectionParam) {
+      return;
     }
-  }, [currentSectionIndex, showSectionSelect, currentSection, isClient]);
+    
+    // Check for saved progress in localStorage
+    const savedProgress = localStorage.getItem("flashcardsProgress");
+    if (savedProgress) {
+      try {
+        const { sectionId, cardIndex } = JSON.parse(savedProgress);
+        if (sectionId) {
+          setSelectedSection(sectionId);
+          if (typeof cardIndex === 'number' && cardIndex >= 0) {
+            setCurrentCardIndex(cardIndex);
+          }
+        }
+      } catch (e) {
+        console.error("Failed to parse saved flashcards progress", e);
+      }
+    }
+  }, [initialSectionParam]);
   
-  // Reset card index when section changes
+  // Save progress to localStorage when section or card index changes
   useEffect(() => {
-    setCurrentCardIndex(0);
-  }, [currentSectionIndex]);
+    if (isClient && selectedSection) {
+      localStorage.setItem("flashcardsProgress", JSON.stringify({
+        sectionId: selectedSection,
+        cardIndex: currentCardIndex
+      }));
+    }
+  }, [selectedSection, currentCardIndex, isClient]);
   
+  // Update URL when section changes
+  useEffect(() => {
+    if (selectedSection) {
+      router.push(`/flashcards?section=${selectedSection}`);
+    } else {
+      router.push("/flashcards");
+      // Clear saved progress when returning to section selection
+      if (isClient) {
+        localStorage.removeItem("flashcardsProgress");
+      }
+    }
+  }, [selectedSection, router, isClient]);
+  
+  // Handle next card
   const handleNextCard = () => {
-    if (currentCardIndex < currentSection.cards.length - 1) {
+    if (!selectedSection) return;
+    
+    const section = flashcardData.sections.find(s => s.id === selectedSection);
+    if (!section) return;
+    
+    if (currentCardIndex < section.cards.length - 1) {
       setCurrentCardIndex(currentCardIndex + 1);
+    } else {
+      // Loop back to the first card when reaching the end
+      setCurrentCardIndex(0);
     }
   };
   
+  // Handle previous card
   const handlePreviousCard = () => {
+    if (!selectedSection) return;
+    
+    const section = flashcardData.sections.find(s => s.id === selectedSection);
+    if (!section) return;
+    
     if (currentCardIndex > 0) {
       setCurrentCardIndex(currentCardIndex - 1);
+    } else {
+      // Loop to the last card when at the first card
+      setCurrentCardIndex(section.cards.length - 1);
     }
   };
   
-  const handleSelectSection = (index: number) => {
-    setCurrentSectionIndex(index);
-    setShowSectionSelect(false);
+  // Back to section selection
+  const handleBackToSections = () => {
+    setSelectedSection(null);
+    setCurrentCardIndex(0);
   };
   
-  const totalCards = currentSection.cards.length;
-  
-  // Show loading state while client-side code initializes
+  // If still loading on the client side, show a loading state
   if (!isClient) {
     return <div className="p-8 text-center">Laden...</div>;
   }
   
-  return (
-    <div className="container mx-auto p-4 md:p-8">
-      <div className="mb-6 flex items-center">
-        <Button 
-          variant="ghost" 
-          size="sm" 
-          onClick={() => router.push('/')}
-        >
-          <ChevronLeft className="mr-2 h-4 w-4" />
-          Terug naar Home
-        </Button>
+  // If no section is selected, show the section selection screen
+  if (!selectedSection) {
+    return (
+      <div className="container mx-auto p-6 max-w-4xl">
+        <NavHeader />
         
-        {!showSectionSelect && (
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            onClick={() => setShowSectionSelect(true)}
-            className="ml-auto"
-          >
-            Kies ander onderwerp
-          </Button>
-        )}
+        <Card className="mb-6 dyslexic-card">
+          <CardHeader>
+            <CardTitle className="text-2xl dyslexic-text">Scheikunde Flashcards</CardTitle>
+            <CardDescription className="text-lg dyslexic-text">
+              Kies een onderwerp om te bestuderen met flashcards
+            </CardDescription>
+          </CardHeader>
+        </Card>
+        
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-6">
+          {flashcardData.sections.map((section) => (
+            <motion.div
+              key={section.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+              className="flex"
+            >
+              <Card 
+                className="w-full cursor-pointer dyslexic-card hover:shadow-lg transition-shadow duration-300"
+                onClick={() => setSelectedSection(section.id)}
+              >
+                <CardHeader>
+                  <CardTitle className="text-xl">{section.title}</CardTitle>
+                  <CardDescription className="text-md dyslexic-text">
+                    {section.cards.length} kaarten
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p className="dyslexic-text text-lg">{section.description}</p>
+                </CardContent>
+                <CardFooter>
+                  <Button 
+                    className="w-full text-lg p-5"
+                    size="lg"
+                    onClick={() => setSelectedSection(section.id)}
+                  >
+                    Bekijk Flashcards
+                  </Button>
+                </CardFooter>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
       </div>
+    );
+  }
+  
+  // Show the selected section's flashcards
+  const section = flashcardData.sections.find(s => s.id === selectedSection);
+  if (!section) return <div>Sectie niet gevonden</div>;
+  
+  const currentCard = section.cards[currentCardIndex];
+  
+  return (
+    <div className="container mx-auto p-6 max-w-4xl">
+      <NavHeader />
+      
+      <Card className="mb-6 dyslexic-card">
+        <CardHeader>
+          <div className="flex justify-between items-center">
+            <div>
+              <CardTitle className="text-2xl dyslexic-text">{section.title}</CardTitle>
+              <CardDescription className="text-lg dyslexic-text">
+                {currentCardIndex + 1} van {section.cards.length} kaarten
+              </CardDescription>
+            </div>
+            <Button 
+              variant="outline" 
+              onClick={handleBackToSections}
+              className="text-lg"
+            >
+              Alle Secties
+            </Button>
+          </div>
+        </CardHeader>
+      </Card>
       
       <AnimatePresence mode="wait">
-        {showSectionSelect ? (
-          <motion.div
-            key="section-select"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            <Card>
-              <CardHeader>
-                <CardTitle>Kies een onderwerp</CardTitle>
-                <CardDescription>
-                  Selecteer een onderwerp om mee te oefenen
-                </CardDescription>
-              </CardHeader>
-              
-              <CardContent>
-                <div className="grid gap-2">
-                  {flashcardData.map((section, index) => (
-                    <Button
-                      key={section.section}
-                      variant={currentSectionIndex === index ? "default" : "outline"}
-                      className="justify-between h-auto py-3"
-                      onClick={() => handleSelectSection(index)}
-                    >
-                      <span>{section.section}</span>
-                      <span className="ml-2 text-xs bg-gray-100 dark:bg-gray-800 rounded-full px-2 py-1 text-gray-600 dark:text-gray-300">
-                        {section.cards.length} kaarten
-                      </span>
-                    </Button>
-                  ))}
-                </div>
-              </CardContent>
-              
-              <CardFooter>
-                <Button 
-                  onClick={() => setShowSectionSelect(false)}
-                  disabled={flashcardData.length === 0}
-                  className="w-full"
-                >
-                  Start met {currentSection?.section}
-                </Button>
-              </CardFooter>
-            </Card>
-          </motion.div>
-        ) : (
-          <motion.div
-            key="flashcards"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            <div className="mb-4">
-              <h1 className="text-2xl font-bold">{currentSection.section}</h1>
-            </div>
-            
-            <Flashcard
-              front={currentSection.cards[currentCardIndex].front}
-              back={currentSection.cards[currentCardIndex].back}
-              onNext={handleNextCard}
-              onPrevious={handlePreviousCard}
-              currentIndex={currentCardIndex}
-              totalCards={totalCards}
-            />
-          </motion.div>
-        )}
+        <Flashcard
+          key={`${section.id}-${currentCardIndex}`}
+          front={currentCard.front}
+          back={currentCard.back}
+          onNext={handleNextCard}
+          onPrevious={handlePreviousCard}
+          currentIndex={currentCardIndex}
+          totalCards={section.cards.length}
+        />
       </AnimatePresence>
+      
+      <div className="mt-8 text-center dyslexic-text">
+        <p className="text-lg">
+          Druk op de kaart om hem om te draaien en het antwoord te zien.
+        </p>
+      </div>
     </div>
   );
 } 

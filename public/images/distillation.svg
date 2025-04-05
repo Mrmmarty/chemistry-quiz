@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100" fill="none">
+  <!-- Distillation flask -->
+  <path d="M20 60C20 45 35 45 35 30V20H45V30C45 45 60 45 60 60C60 71 50 80 40 80C30 80 20 71 20 60Z" fill="#E6F7FF" stroke="#0066CC" stroke-width="2"/>
+  
+  <!-- Liquid in flask -->
+  <path d="M22 60C22 69.5 30 78 40 78C50 78 58 69.5 58 60C58 56.8 56.9 54 55.2 51.5H24.8C23.1 54 22 56.8 22 60Z" fill="#88CCFF"/>
+  
+  <!-- Vapor molecules -->
+  <circle cx="40" cy="40" r="2" fill="#AADDFF"/>
+  <circle cx="45" cy="35" r="2" fill="#AADDFF"/>
+  <circle cx="35" cy="35" r="2" fill="#AADDFF"/>
+  <circle cx="40" cy="30" r="2" fill="#AADDFF"/>
+  
+  <!-- Condenser tube -->
+  <path d="M60 50H70C75 50 80 55 80 60C80 65 75 70 70 70H60" stroke="#0066CC" stroke-width="2" fill="none"/>
+  
+  <!-- Collection flask -->
+  <path d="M80 70V75C80 77.8 77.8 80 75 80H85C82.2 80 80 77.8 80 75V70Z" fill="#E6F7FF" stroke="#0066CC" stroke-width="2"/>
+  <rect x="75" y="80" width="10" height="10" rx="2" fill="#E6F7FF" stroke="#0066CC" stroke-width="2"/>
+  
+  <!-- Distillate drops -->
+  <path d="M62 70C62 71.1 61.1 72 60 72C58.9 72 58 71.1 58 70C58 68.9 60 67 60 67C60 67 62 68.9 62 70Z" fill="#88CCFF"/>
+  <path d="M72 70C72 71.1 71.1 72 70 72C68.9 72 68 71.1 68 70C68 68.9 70 67 70 67C70 67 72 68.9 72 70Z" fill="#88CCFF"/>
+  <path d="M77 75C77 76.1 76.1 77 75 77C73.9 77 73 76.1 73 75C73 73.9 75 72 75 72C75 72 77 73.9 77 75Z" fill="#88CCFF"/>
+  
+  <!-- Heat source -->
+  <path d="M30 85L25 90H55L50 85H30Z" fill="#FF9966" stroke="#FF6633" stroke-width="1"/>
+  <path d="M28 85L32 80H48L52 85H28Z" fill="#FFCC99" stroke="#FF9966" stroke-width="1"/>
+</svg> 

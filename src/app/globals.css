@@ -1,12 +1,60 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* OpenDyslexic Font Declarations */
+@font-face {
+  font-family: 'OpenDyslexic';
+  src: url('/fonts/OpenDyslexic-Regular.woff2') format('woff2'),
+       url('/fonts/OpenDyslexic-Regular.woff') format('woff'),
+       url('/fonts/OpenDyslexic-Regular.eot') format('embedded-opentype'),
+       url('/fonts/OpenDyslexic-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'OpenDyslexic';
+  src: url('/fonts/OpenDyslexic-Bold.woff2') format('woff2'),
+       url('/fonts/OpenDyslexic-Bold.woff') format('woff'),
+       url('/fonts/OpenDyslexic-Bold.eot') format('embedded-opentype'),
+       url('/fonts/OpenDyslexic-Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'OpenDyslexic';
+  src: url('/fonts/OpenDyslexic-Italic.woff2') format('woff2'),
+       url('/fonts/OpenDyslexic-Italic.woff') format('woff'),
+       url('/fonts/OpenDyslexic-Italic.eot') format('embedded-opentype'),
+       url('/fonts/OpenDyslexic-Italic.otf') format('opentype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'OpenDyslexic';
+  src: url('/fonts/OpenDyslexic-Bold-Italic.woff2') format('woff2'),
+       url('/fonts/OpenDyslexic-Bold-Italic.woff') format('woff'),
+       url('/fonts/OpenDyslexic-Bold-Italic.eot') format('embedded-opentype'),
+       url('/fonts/OpenDyslexic-Bold-Italic.otf') format('opentype');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-inter);
+  --font-dyslexic: 'OpenDyslexic', var(--font-inter);
+  --font-comic: 'Comic Sans MS', 'Comic Sans', cursive, var(--font-inter);
+  --font-arial: 'Arial', 'Helvetica', sans-serif;
   --font-mono: var(--font-geist-mono);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -118,5 +166,242 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: var(--font-inter);
+    line-height: 1.7;
+    letter-spacing: 0.01em;
+    word-spacing: 0.15em;
   }
+  
+  /* Improved readability for users */
+  p, li, h1, h2, h3, h4, h5, h6 {
+    @apply tracking-wide;
+    margin-bottom: 0.7em;
+  }
+  
+  /* Increase line spacing for better readability */
+  p, li {
+    @apply leading-relaxed;
+    margin-bottom: 1em;
+  }
+  
+  /* Add contrast to links */
+  a {
+    @apply font-medium;
+    text-decoration: underline;
+  }
+}
+
+/* Custom classes for the flashcards */
+.flashcard-title {
+  @apply text-xl font-medium mb-4;
+  letter-spacing: 0.02em;
+}
+
+.flashcard-content {
+  @apply text-lg leading-relaxed;
+  letter-spacing: 0.01em;
+  word-spacing: 0.15em;
+}
+
+/* High contrast mode for users who need it */
+.high-contrast {
+  --foreground: #000000;
+  --background: #FFFFE0; /* Light yellow background is better for readability */
+  --primary: #0047AB;
+  --secondary: #F5F5F5;
+  --border: #000000;
+}
+
+/* Animation for card flipping - smoother transition */
+.flip-transition {
+  transition-duration: 0.8s !important;
+  transition-timing-function: ease-in-out !important;
+}
+
+/* Additional accessibility-friendly styles */
+.dyslexic-card {
+  background-color: #FFFAFA; /* Snow color background for better contrast */
+  line-height: 1.8;
+}
+
+.dyslexic-text {
+  word-spacing: 0.15em;
+  margin-bottom: 1em;
+}
+
+/* OpenDyslexic Font Styles */
+.dyslexic-text {
+  font-family: 'OpenDyslexic', sans-serif;
+  line-height: 1.5;
+  letter-spacing: 0.05em;
+  word-spacing: 0.15em;
+}
+
+.dyslexic-card {
+  font-family: 'OpenDyslexic', sans-serif;
+  border-width: 2px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.flashcard-title {
+  font-family: 'OpenDyslexic', sans-serif;
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.flashcard-content {
+  font-family: 'OpenDyslexic', sans-serif;
+  font-size: 1.5rem;
+  line-height: 1.6;
+  letter-spacing: 0.05em;
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  body {
+    @apply bg-white text-black;
+  }
+  
+  .dyslexic-card {
+    @apply bg-white border-black;
+  }
+  
+  button {
+    @apply bg-black text-white border-2 border-black;
+  }
+}
+
+/* Increased spacing for better readability */
+p, h1, h2, h3, h4, h5, h6 {
+  margin-bottom: 1em;
+}
+
+/* Reduce animation for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Improved focus indicators for better accessibility */
+:focus {
+  outline: 3px solid #4299e1;
+  outline-offset: 2px;
+}
+
+/* Flip card transition */
+.flip-transition {
+  transition: transform 0.6s ease-in-out;
+}
+
+/* Custom underline for links */
+a:not(.no-underline) {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+/* Print styles for better printing */
+@media print {
+  body {
+    font-size: 12pt;
+    line-height: 1.4;
+  }
+  
+  button, .no-print {
+    display: none !important;
+  }
+  
+  .dyslexic-card {
+    break-inside: avoid;
+    page-break-inside: avoid;
+    box-shadow: none;
+    border: 1px solid #ccc;
+  }
+}
+
+/* Accessible font classes */
+.font-opentype {
+  font-family: var(--font-dyslexic);
+  line-height: 1.5;
+  letter-spacing: 0.05em;
+  word-spacing: 0.15em;
+}
+
+.font-comic {
+  font-family: var(--font-comic);
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  word-spacing: 0.1em;
+}
+
+.font-arial {
+  font-family: var(--font-arial);
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+  word-spacing: 0.05em;
+}
+
+.font-default {
+  font-family: var(--font-sans);
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+  word-spacing: 0.05em;
+}
+
+/* Font switcher styles */
+.font-switcher {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.75rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* OpenDyslexic Font Styles - Updated to use variable font class */
+.dyslexic-text {
+  font-family: 'OpenDyslexic', sans-serif;
+  line-height: 1.5;
+  letter-spacing: 0.05em;
+  word-spacing: 0.15em;
+}
+
+/* Add data attribute selectors for font switching */
+[data-font="opentype"] .dyslexic-text,
+[data-font="opentype"] .dyslexic-card,
+[data-font="opentype"] .flashcard-title,
+[data-font="opentype"] .flashcard-content {
+  font-family: 'OpenDyslexic', sans-serif;
+}
+
+[data-font="comic"] .dyslexic-text,
+[data-font="comic"] .dyslexic-card,
+[data-font="comic"] .flashcard-title,
+[data-font="comic"] .flashcard-content {
+  font-family: 'Comic Sans MS', 'Comic Sans', cursive, sans-serif;
+}
+
+[data-font="arial"] .dyslexic-text,
+[data-font="arial"] .dyslexic-card,
+[data-font="arial"] .flashcard-title,
+[data-font="arial"] .flashcard-content {
+  font-family: 'Arial', 'Helvetica', sans-serif;
+}
+
+[data-font="default"] .dyslexic-text,
+[data-font="default"] .dyslexic-card,
+[data-font="default"] .flashcard-title,
+[data-font="default"] .flashcard-content {
+  font-family: var(--font-sans);
 }

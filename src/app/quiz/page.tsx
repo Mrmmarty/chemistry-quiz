@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { quizData } from "@/data/quizData";
@@ -8,6 +8,7 @@ import QuizSection from "@/components/QuizSection";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import NavHeader from "@/components/NavHeader";
 
 type SectionResult = {
   sectionName: string;
@@ -17,11 +18,17 @@ type SectionResult = {
 
 export default function QuizPage() {
   const router = useRouter();
+  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
   const [sectionResults, setSectionResults] = useState<SectionResult[]>([]);
   const [showFinalResults, setShowFinalResults] = useState(false);
   // Using separate state for client-side rendering detection
   const [isClient, setIsClient] = useState(false);
+  // Add state for tracking question-level progress
+  const [sectionProgress, setSectionProgress] = useState<Record<string, {
+    currentQuestionIndex: number;
+    answers: Record<string, { answer: string; isCorrect: boolean }>;
+  }>>({});
   
   // Set isClient to true once the component mounts
   useEffect(() => {
@@ -35,21 +42,43 @@ export default function QuizPage() {
         const progress = JSON.parse(savedProgress);
         setSectionResults(progress.sectionResults || []);
         setCurrentSectionIndex(progress.currentSectionIndex || 0);
+        // Load question-level progress if available
+        if (progress.sectionProgress) {
+          setSectionProgress(progress.sectionProgress);
+        }
       } catch (e) {
         console.error("Failed to parse saved progress", e);
       }
     }
   }, []);
   
-  // Save progress to localStorage whenever section results or current section changes
-  useEffect(() => {
-    if (isClient && sectionResults.length > 0) {
-      localStorage.setItem("quizProgress", JSON.stringify({
-        sectionResults,
-        currentSectionIndex
-      }));
+  // Debounced save to localStorage
+  const saveToLocalStorage = useCallback(() => {
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
     }
-  }, [sectionResults, currentSectionIndex, isClient]);
+    
+    saveTimeoutRef.current = setTimeout(() => {
+      if (isClient) {
+        localStorage.setItem("quizProgress", JSON.stringify({
+          sectionResults,
+          currentSectionIndex,
+          sectionProgress
+        }));
+      }
+    }, 500);
+  }, [sectionResults, currentSectionIndex, sectionProgress, isClient]);
+  
+  // Save progress to localStorage when state changes
+  useEffect(() => {
+    saveToLocalStorage();
+    
+    return () => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+    };
+  }, [saveToLocalStorage]);
   
   const handleSectionComplete = (result: SectionResult) => {
     const newResults = [...sectionResults];
@@ -65,8 +94,15 @@ export default function QuizPage() {
     
     setSectionResults(newResults);
     
+    // Clear the progress for this section since it's complete
+    const newSectionProgress = { ...sectionProgress };
+    if (currentSection) {
+      delete newSectionProgress[currentSection.title];
+      setSectionProgress(newSectionProgress);
+    }
+    
     // Move to next section or show results if all sections are completed
-    if (currentSectionIndex < quizData.length - 1) {
+    if (currentSectionIndex < quizData.sections.length - 1) {
       setCurrentSectionIndex(currentSectionIndex + 1);
     } else {
       setShowFinalResults(true);
@@ -77,8 +113,27 @@ export default function QuizPage() {
     localStorage.removeItem("quizProgress");
     setSectionResults([]);
     setCurrentSectionIndex(0);
+    setSectionProgress({});
     setShowFinalResults(false);
   };
+  
+  // Track question progress within a section - use useCallback to avoid recreating on every render
+  const handleQuestionProgress = useCallback((
+    sectionName: string, 
+    currentQuestionIndex: number, 
+    answers: Record<string, { answer: string; isCorrect: boolean }>
+  ) => {
+    setSectionProgress(prev => {
+      const newProgress = {
+        ...prev,
+        [sectionName]: {
+          currentQuestionIndex,
+          answers
+        }
+      };
+      return newProgress;
+    });
+  }, []);
   
   // Calculate overall score
   const totalScore = sectionResults.reduce((sum, result) => sum + result.score, 0);
@@ -88,9 +143,12 @@ export default function QuizPage() {
     : 0;
   
   // Calculate progress through the quiz
-  const quizProgress = ((sectionResults.length) / quizData.length) * 100;
+  const quizProgress = ((sectionResults.length) / quizData.sections.length) * 100;
   
-  const currentSection = quizData[currentSectionIndex];
+  const currentSection = quizData.sections[currentSectionIndex];
+  
+  // Get saved progress for current section
+  const currentSectionProgress = currentSection ? sectionProgress[currentSection.title] : undefined;
   
   // Only show loading state on the client side before data is loaded
   if (!isClient) {
@@ -99,6 +157,8 @@ export default function QuizPage() {
   
   return (
     <div className="container mx-auto p-4 md:p-8">
+      <NavHeader />
+      
       {!showFinalResults ? (
         <>
           <div className="mb-8">
@@ -110,23 +170,27 @@ export default function QuizPage() {
               </span>
             </div>
             <div className="mt-2 text-sm text-gray-500">
-              Sectie {currentSectionIndex + 1} van {quizData.length}
+              Sectie {currentSectionIndex + 1} van {quizData.sections.length}
             </div>
           </div>
           
           <AnimatePresence mode="wait">
             <motion.div
-              key={currentSection.section}
+              key={currentSection.title}
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.3 }}
             >
               <QuizSection 
-                section={currentSection.section}
+                section={currentSection.title}
                 description={currentSection.description}
                 questions={currentSection.questions}
                 onComplete={handleSectionComplete}
+                initialProgress={currentSectionProgress}
+                onProgressUpdate={(currentQuestionIndex, answers) => 
+                  handleQuestionProgress(currentSection.title, currentQuestionIndex, answers)
+                }
               />
             </motion.div>
           </AnimatePresence>

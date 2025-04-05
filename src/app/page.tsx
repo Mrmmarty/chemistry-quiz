@@ -1,89 +1,111 @@
+"use client";
+
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { quizData } from "@/data/quizData";
 import { flashcardData } from "@/data/flashcardData";
+import NavHeader from "@/components/NavHeader";
+import { ArrowRight } from "lucide-react";
 
 export default function Home() {
-  const totalQuestions = quizData.reduce(
-    (sum, section) => sum + section.questions.length,
-    0
-  );
+  const totalQuestions = quizData.sections.reduce((total, section) => total + section.questions.length, 0);
   
-  const totalFlashcards = flashcardData.reduce(
-    (sum, section) => sum + section.cards.length,
-    0
-  );
+  const totalFlashcards = flashcardData.sections.reduce((total, section) => total + section.cards.length, 0);
 
   return (
-    <main className="container mx-auto p-4 md:p-8">
-      <div className="max-w-3xl mx-auto">
-        <Card className="border-2 shadow-lg mb-6">
-          <CardHeader className="text-center">
-            <CardTitle className="text-3xl font-bold">Scheikunde Quiz</CardTitle>
-            <CardDescription className="text-lg mt-2">
-              Test je kennis over faseovergangen, mengsels en meer!
-            </CardDescription>
-          </CardHeader>
-
-          <CardContent className="space-y-6">
-            <div className="grid gap-6 md:grid-cols-2">
-              <div className="bg-slate-50 p-4 rounded-lg">
-                <h2 className="font-medium mb-2">Quiz</h2>
-                <div className="text-sm text-slate-600 mb-4">
-                  <p>Test je kennis met meerkeuzevragen over alle onderwerpen.</p>
-                  <p className="mt-2">{totalQuestions} vragen in {quizData.length} categorieën</p>
-                </div>
-                <Button asChild className="w-full">
-                  <Link href="/quiz">Start Quiz</Link>
-                </Button>
-              </div>
-              
-              <div className="bg-slate-50 p-4 rounded-lg">
-                <h2 className="font-medium mb-2">Flashcards</h2>
-                <div className="text-sm text-slate-600 mb-4">
-                  <p>Leer en herhaal met flashcards over belangrijke begrippen.</p>
-                  <p className="mt-2">{totalFlashcards} kaarten in {flashcardData.length} categorieën</p>
-                </div>
-                <Button asChild variant="outline" className="w-full">
-                  <Link href="/flashcards">Leren met Flashcards</Link>
-                </Button>
-              </div>
-            </div>
-
-            <div className="space-y-3">
-              <h2 className="font-medium">Onderdelen:</h2>
-              <ul className="space-y-1">
-                {quizData.map((section) => (
-                  <li key={section.section} className="flex justify-between items-center">
-                    <span className="text-sm">{section.section}</span>
-                    <span className="text-xs text-slate-500">
-                      {section.questions.length} vragen
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="space-y-2">
-              <h2 className="font-medium">Instructies:</h2>
-              <ul className="list-disc pl-5 space-y-1 text-sm">
-                <li>Beantwoord elke vraag door het juiste antwoord te kiezen</li>
-                <li>Na elk antwoord krijg je direct te zien of het goed of fout was</li>
-                <li>Bij elk antwoord krijg je een uitleg om de stof beter te begrijpen</li>
-                <li>Je kunt je voortgang pauzeren en later verdergaan</li>
-                <li>Aan het einde van de quiz zie je je score per onderwerp</li>
-              </ul>
-            </div>
-          </CardContent>
-        </Card>
-
-        <div className="mt-8 text-center text-sm text-slate-500">
-          <p>
-            Deze quiz is gebaseerd op het studiemateriaal over het suikerfabriek curriculum.
+    <div className="container mx-auto px-4 py-8">
+      <NavHeader />
+      
+      <main className="space-y-10 mt-8">
+        <section className="text-center">
+          <h1 className="text-4xl font-bold mb-6 dyslexic-text">Scheikunde Leren</h1>
+          <p className="text-xl max-w-3xl mx-auto mb-8 dyslexic-text">
+            Welkom bij de scheikunde quiz app! Hier kun je oefenen met verschillende 
+            scheikunde onderwerpen via quizzen en flashcards.
           </p>
-        </div>
-      </div>
-    </main>
+        </section>
+        
+        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <Card className="dyslexic-card">
+            <CardHeader>
+              <CardTitle className="text-2xl">Quiz</CardTitle>
+              <CardDescription className="text-lg">
+                Test je kennis met vragen over verschillende scheikunde onderwerpen
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="aspect-video flex items-center justify-center relative">
+                <div 
+                  className="w-full h-full rounded-lg bg-primary/10 flex items-center justify-center"
+                >
+                  <span className="text-2xl text-primary/60">Quiz</span>
+                </div>
+              </div>
+            </CardContent>
+            <CardFooter>
+              <Link href="/quiz" className="w-full">
+                <Button className="w-full text-lg p-6">
+                  Start Quiz
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
+            </CardFooter>
+          </Card>
+          
+          <Card className="dyslexic-card">
+            <CardHeader>
+              <CardTitle className="text-2xl">Flashcards</CardTitle>
+              <CardDescription className="text-lg">
+                Leer scheikunde concepten met behulp van digitale flashcards
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="aspect-video flex items-center justify-center relative">
+                <div 
+                  className="w-full h-full rounded-lg bg-primary/10 flex items-center justify-center"
+                >
+                  <span className="text-2xl text-primary/60">Flashcards</span>
+                </div>
+              </div>
+            </CardContent>
+            <CardFooter>
+              <Link href="/flashcards" className="w-full">
+                <Button className="w-full text-lg p-6">
+                  Open Flashcards
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
+            </CardFooter>
+          </Card>
+          
+          <Card className="dyslexic-card">
+            <CardHeader>
+              <CardTitle className="text-2xl">Flashcard Quiz</CardTitle>
+              <CardDescription className="text-lg">
+                Test je kennis van alle flashcard inhoud in quiz-formaat
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="aspect-video flex items-center justify-center relative">
+                <div 
+                  className="w-full h-full rounded-lg bg-secondary/20 flex items-center justify-center"
+                >
+                  <span className="text-2xl text-secondary/70">Flashcard Quiz</span>
+                </div>
+              </div>
+            </CardContent>
+            <CardFooter>
+              <Link href="/flashcard-quiz" className="w-full">
+                <Button className="w-full text-lg p-6" variant="secondary">
+                  Start Flashcard Quiz
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
+            </CardFooter>
+          </Card>
+        </section>
+      </main>
+    </div>
   );
 } 

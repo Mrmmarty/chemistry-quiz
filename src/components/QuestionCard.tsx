@@ -48,13 +48,13 @@ export default function QuestionCard({
       transition={{ duration: 0.3 }}
       className="w-full"
     >
-      <Card>
+      <Card className="dyslexic-card">
         <CardHeader>
-          <CardTitle className="text-lg">{question}</CardTitle>
+          <CardTitle className="text-xl leading-relaxed">{question}</CardTitle>
         </CardHeader>
         
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
+        <CardContent className="space-y-6">
+          <div className="space-y-4">
             {options.map((option, index) => {
               const isCorrectAnswer = isAnswered && option === correctAnswer;
               const isIncorrectSelection = isAnswered && selectedAnswer === option && option !== correctAnswer;
@@ -63,26 +63,26 @@ export default function QuestionCard({
                 <div
                   key={`${questionId}-option-${index}`}
                   className={`
-                    relative flex items-center p-4 rounded-md border cursor-pointer transition-colors
-                    ${!isAnswered && selectedAnswer === option ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-blue-300'}
-                    ${isCorrectAnswer ? 'border-green-500 bg-green-50' : ''}
-                    ${isIncorrectSelection ? 'border-red-500 bg-red-50' : ''}
+                    relative flex items-center p-5 rounded-md border-2 cursor-pointer transition-colors dyslexic-text
+                    ${!isAnswered && selectedAnswer === option ? 'border-blue-600 bg-blue-50' : 'border-gray-200 hover:border-blue-300'}
+                    ${isCorrectAnswer ? 'border-green-600 bg-green-50' : ''}
+                    ${isIncorrectSelection ? 'border-red-600 bg-red-50' : ''}
                   `}
                   onClick={() => handleSelectAnswer(option)}
                 >
                   <div className="flex-1">
-                    <span>{option}</span>
+                    <span className="text-lg leading-relaxed">{option}</span>
                   </div>
                   
                   {isCorrectAnswer && (
                     <div className="absolute right-4">
-                      <CheckCircle className="h-5 w-5 text-green-500" />
+                      <CheckCircle className="h-6 w-6 text-green-600" />
                     </div>
                   )}
                   
                   {isIncorrectSelection && (
                     <div className="absolute right-4">
-                      <XCircle className="h-5 w-5 text-red-500" />
+                      <XCircle className="h-6 w-6 text-red-600" />
                     </div>
                   )}
                 </div>
@@ -96,20 +96,21 @@ export default function QuestionCard({
               animate={{ opacity: 1, height: "auto" }}
               transition={{ duration: 0.3 }}
             >
-              <Alert className="mt-4 bg-blue-50 border-blue-200">
-                <AlertDescription>
-                  <span className="font-medium">Uitleg: </span>{explanation}
+              <Alert className="mt-6 bg-blue-50 border-blue-200 border-2 p-4">
+                <AlertDescription className="dyslexic-text text-lg">
+                  <span className="font-bold">Uitleg: </span>{explanation}
                 </AlertDescription>
               </Alert>
             </motion.div>
           )}
         </CardContent>
         
-        <CardFooter>
+        <CardFooter className="pt-4">
           <Button 
             onClick={handleSubmit} 
             disabled={!selectedAnswer || isAnswered}
-            className="w-full"
+            className="w-full text-lg p-6"
+            size="lg"
           >
             {isAnswered ? "Beantwoord" : "Controleer antwoord"}
           </Button>
