@@ -1,8 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     output: 'export',
-    // Configure the base path if your site will be hosted in a subdirectory
-    basePath: '/chemistry-quiz',
+    // Configure the base path only in production for GitHub Pages
+    basePath: process.env.NODE_ENV === 'production' ? '/chemistry-quiz' : '',
     // This setting is required for GitHub Pages
     images: {
         unoptimized: true,
