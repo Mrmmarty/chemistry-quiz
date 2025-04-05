@@ -101,15 +101,15 @@ export default function QuizSection({
   
   return (
     <div className="w-full max-w-3xl mx-auto">
-      <Card className="mb-6 dyslexic-card">
-        <CardHeader>
-          <CardTitle className="text-2xl">{section}</CardTitle>
-          <CardDescription className="text-lg dyslexic-text">{description}</CardDescription>
+      <Card className="mb-4 sm:mb-6 dyslexic-card">
+        <CardHeader className="px-4 sm:px-6 py-4 sm:py-6">
+          <CardTitle className="text-xl sm:text-2xl">{section}</CardTitle>
+          <CardDescription className="text-base sm:text-lg dyslexic-text">{description}</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="px-4 sm:px-6 pb-4 sm:pb-6">
           <div className="mb-4">
-            <Progress value={progress} className="h-3" />
-            <div className="flex justify-between mt-3 text-md dyslexic-text">
+            <Progress value={progress} className="h-2 sm:h-3" />
+            <div className="flex justify-between mt-2 sm:mt-3 text-sm sm:text-md dyslexic-text">
               <span>Vraag {currentQuestionIndex + 1} van {questions.length}</span>
               <span>{Math.round(progress)}% voltooid</span>
             </div>
@@ -134,27 +134,29 @@ export default function QuizSection({
               correctAnswer={currentQuestion.answer}
               explanation={currentQuestion.explanation}
               onAnswer={handleAnswer}
+              onNext={handleNextQuestion}
             />
             
-            <div className="mt-6 flex justify-between">
+            <div className="mt-4 sm:mt-6 flex justify-between">
               <Button
                 variant="outline"
                 disabled={currentQuestionIndex === 0}
                 onClick={() => setCurrentQuestionIndex(currentQuestionIndex - 1)}
-                className="text-lg p-6"
-                size="lg"
+                className="text-sm sm:text-lg px-3 py-2 sm:p-6"
+                size="default"
               >
                 Vorige
               </Button>
               
-              <Button
-                onClick={handleNextQuestion}
-                disabled={!isCurrentQuestionAnswered}
-                className="text-lg p-6"
-                size="lg"
-              >
-                {currentQuestionIndex < questions.length - 1 ? "Volgende" : "Toon resultaten"}
-              </Button>
+              {isCurrentQuestionAnswered && (
+                <Button
+                  onClick={handleNextQuestion}
+                  className="text-sm sm:text-lg px-3 py-2 sm:p-6"
+                  size="default"
+                >
+                  {currentQuestionIndex < questions.length - 1 ? "Volgende" : "Toon resultaten"}
+                </Button>
+              )}
             </div>
           </motion.div>
         ) : (

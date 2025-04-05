@@ -11,6 +11,8 @@ import { Progress } from "@/components/ui/progress";
 import NavHeader from "@/components/NavHeader";
 import { saveQuizScore } from "@/lib/score-utils";
 import { ScoreHistory } from "@/components/ScoreHistory";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { InfoIcon } from "lucide-react";
 
 type SectionResult = {
   sectionName: string;
@@ -34,6 +36,8 @@ export default function QuizPage() {
   
   // Add a state to track if the current quiz was already saved
   const [scoresSaved, setScoresSaved] = useState(false);
+  const [infoModalOpen, setInfoModalOpen] = useState(false);
+  const [infoModalContent, setInfoModalContent] = useState({ title: "", content: "" });
   
   // Set isClient to true once the component mounts
   useEffect(() => {
@@ -174,6 +178,48 @@ export default function QuizPage() {
   // Get saved progress for current section
   const currentSectionProgress = currentSection ? sectionProgress[currentSection.title] : undefined;
   
+  // Open info modal with explanation
+  const openInfoModal = (title: string, content: string) => {
+    setInfoModalContent({
+      title,
+      content
+    });
+    setInfoModalOpen(true);
+  };
+  
+  // Handle section question answered
+  const handleSectionQuestionAnswered = (
+    sectionId: string,
+    questionIndex: number,
+    isCorrect: boolean,
+    selectedAnswer: string
+  ) => {
+    // Update the answers
+    const newAnswers = { ...sectionProgress };
+    if (!newAnswers[sectionId]) {
+      newAnswers[sectionId] = [];
+    }
+    
+    newAnswers[sectionId][questionIndex] = {
+      correct: isCorrect,
+      answer: selectedAnswer,
+    };
+    
+    setSectionProgress(newAnswers);
+    localStorage.setItem("quizAnswers", JSON.stringify(newAnswers));
+    
+    // Auto-advance to next question if correct (with delay)
+    if (isCorrect) {
+      const activeSection = quizData.sections.find((s) => s.id === sectionId);
+      if (activeSection && currentSectionProgress && currentSectionProgress.currentQuestionIndex < activeSection.questions.length - 1) {
+        setTimeout(() => {
+          // If not the last question in section, go to next question
+          handleQuestionProgress(activeSection.title, currentSectionProgress.currentQuestionIndex + 1, newAnswers[activeSection.title] || {});
+        }, 800);
+      }
+    }
+  };
+  
   // Only show loading state on the client side before data is loaded
   if (!isClient) {
     return <div className="p-8 text-center">Laden...</div>;
@@ -290,6 +336,18 @@ export default function QuizPage() {
           </Card>
         </motion.div>
       )}
+      
+      {/* Information Modal */}
+      <Dialog open={infoModalOpen} onOpenChange={setInfoModalOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>{infoModalContent.title}</DialogTitle>
+            <DialogDescription>
+              {infoModalContent.content}
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 } 
